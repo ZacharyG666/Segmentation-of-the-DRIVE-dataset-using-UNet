@@ -88,7 +88,8 @@ if __name__ == '__main__':
         acc = 0.0
         cnt = 0  # 验证集总共有多少张图片
 
-        with torch.no_grad():  # 验证时不需要计算梯度
+        # 验证模型效果时，我们只需使用模型的前向计算结果来生成预测结果，而不需计算梯度
+        with torch.no_grad():  # 是一个上下文管理器，禁用梯度运算，以避免在进行参数优化时浪费计算资源
             for data in eval_loader:
                 imgs, labels = data
                 imgs = imgs.to(device)
