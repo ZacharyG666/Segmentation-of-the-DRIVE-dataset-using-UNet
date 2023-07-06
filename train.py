@@ -107,5 +107,5 @@ if __name__ == '__main__':
             best_epoch = epoch
             best_weights = copy.deepcopy(model.state_dict())
 
-        print("best epoch:{}, acc:{:.4f}".format(best_epoch, best_acc))
-        torch.save(best_weights, save_path)
+    print("best epoch:{}, acc:{:.4f}".format(best_epoch, best_acc))
+    torch.save(best_weights, save_path)
