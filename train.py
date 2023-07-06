@@ -85,11 +85,10 @@ if __name__ == '__main__':
         # 每个训练周期结束时，使用验证集来评估模型性能，并且根据验证集的误差来调整模型的参数，提高模型的泛化能力
         model.eval()
         epoch_eval_losses = AverageMeter()
-        acc = 0.0
+        acc = 0.0  # # accumulate accurate number / epoch
         cnt = 0  # 验证集总共有多少张图片
 
-        # 验证模型效果时，我们只需使用模型的前向计算结果来生成预测结果，而不需计算梯度
-        with torch.no_grad():  # 是一个上下文管理器，禁用梯度运算，以避免在进行参数优化时浪费计算资源
+        with torch.no_grad():  # 验证时不需要计算梯度
             for data in eval_loader:
                 imgs, labels = data
                 imgs = imgs.to(device)
@@ -100,27 +99,13 @@ if __name__ == '__main__':
                 # .item()将只包含一个元素的张量转换为Python中的标量。这个方法只适用于只包含一个元素的张量，如果张量中有多个元素，将会抛出异常。
                 acc += (preds == labels).sum().item() / (labels.size(2) * labels.size(3))
                 cnt += labels.size(0)
+            eval_acc = acc / cnt   # eval_acc = acc / eval_size
+            print("epoch:{}, eval_losses:{:.6f}, epoch_acc:{:.4f}".format(epoch, eval_losses, eval_acc))
 
-            accurate = acc / cnt
-            print("epoch:{}, eval_losses:{:.6f}, epoch_acc:{:.4f}".format(epoch, eval_losses, accurate))
-
-            if accurate >= best_acc:
-                best_acc = accurate
-                best_epoch = epoch
-                best_weights = copy.deepcopy(model.state_dict())
+        if eval_acc >= best_acc:
+            best_acc = eval_acc
+            best_epoch = epoch
+            best_weights = copy.deepcopy(model.state_dict())
 
         print("best epoch:{}, acc:{:.4f}".format(best_epoch, best_acc))
         torch.save(best_weights, save_path)
-
-
-
-
-
-
-
-
-
-
-
-
-
