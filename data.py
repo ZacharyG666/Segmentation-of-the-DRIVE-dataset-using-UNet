@@ -3,7 +3,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-
+# torchvision.transforms.ToTensor(): ①.避免不同特征值域差异过大，使网络训练更容易  ②.避免反向传播时梯度消失与梯度爆炸，提高模型的训练效率与性能
 data_transform = transforms.Compose([transforms.ToTensor()])
                                     # transforms.Normalize((0.5, ), (0.5, ))])  # 标准化把正态分布转化为标准正态分布
 
